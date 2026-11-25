@@ -1,45 +1,57 @@
-# PALLAS – Trung Niên | Website v1.6
+# PALLAS – Trung Niên Storefront v1.7
 
-Website giới thiệu và tiếp nhận yêu cầu mua hàng sản phẩm chăm sóc xe PALLAS, xây dựng trên **Next.js 16 + React 19 + TypeScript**. Bản v1.6 bao gồm trọn vẹn `src`, `public`, `docs`, `scripts`, `tests` và cấu hình project.
+Website thương mại PALLAS, phát triển với **Next.js 16 · React 19 · TypeScript**
 
-## Cài đặt trên Mac
-Yêu cầu **Node.js >=22.14** và npm. Mở Terminal trong thư mục chứa `package.json`:
+## Nâng cấp v1.7
+
+- Chuyển ngôn ngữ **VIE / ENG** ở header desktop và trong menu mobile
+- Chuyển đồng bộ tiêu đề, danh mục, 23 sản phẩm, 4 bài hướng dẫn, giỏ hàng, chính sách và 3 form
+- Giữ nguyên mã sản phẩm, giá VND, hotline, email và địa chỉ công ty
+- Lưu lựa chọn ngôn ngữ bằng `localStorage` (`pallas-site-language`)
+- Bỏ dấu chấm trang trí cuối tiêu đề, nút, thẻ và đoạn mô tả ngắn; giữ dấu chấm cần thiết trong bài viết dài
+- Dịch nhãn, placeholder, trợ giúp, lỗi validation và nội dung email được chuẩn bị từ biểu mẫu
+- Tối ưu tiêu đề tiếng Anh để tránh tràn layout, thêm nhãn/nhóm nút ngôn ngữ hỗ trợ bàn phím
+
+## Chạy trên Mac
+
+Yêu cầu Node.js >=22.14.0 (nên dùng Node 22 LTS)
 
 ```bash
 npm install
+npm test
+npm run build
 npm run dev
 ```
 
-Truy cập http://localhost:3000. Khi đã kiểm tra giao diện, chạy:
+Mở http://localhost:3000
+
+Nếu bạn đang giữ repository GitHub tại `~/Downloads/PALLAS_GitHub`, hãy cập nhật code vào chính thư mục đó, **không thay `.git` và không xóa `package-lock.json` hiện có**:
 
 ```bash
+rsync -av \
+  --exclude='.git' --exclude='package-lock.json' \
+  --exclude='node_modules' --exclude='.next' --exclude='.env*' \
+  ~/Downloads/PALLAS_Storefront_v1.7/ ~/Downloads/PALLAS_GitHub/
+
+cd ~/Downloads/PALLAS_GitHub
+npm install
 npm test
-npm run typecheck
-npm run lint
 npm run build
+git status --short
+git add -A
+git commit -m "Release PALLAS v1.7 bilingual VIE ENG UI"
+git push origin main
 ```
 
-**Lưu ý:** Source ZIP được tạo trong môi trường không truy cập được npm registry nên không bao gồm `node_modules` hoặc `package-lock.json`. Chạy `npm install` trên Mac để tạo lockfile và cài đúng dependencies; sau đó giữ/commit `package-lock.json` để các bản sau cài đặt có tính tái lập.
+Netlify sẽ tự deploy nếu Automatic Deploys được bật
 
-## Thay đổi v1.6
-- Giao diện toàn site dựa trên v1.5, giữ hero thương hiệu tương tác, ảnh sản phẩm nền trong suốt, danh mục, giá và giỏ hàng.
-- Form **liên hệ**, **đại lý**, **yêu cầu đặt hàng** được thiết kế thống nhất, responsive và hỗ trợ keyboard.
-- Validation: trường bắt buộc, họ tên, điện thoại Việt Nam, email, độ dài nội dung, địa chỉ và xác nhận cung cấp thông tin. Lỗi hiển thị ngay tại trường và form tự focus lỗi đầu tiên.
-- Cho phép chọn cách phản hồi: điện thoại, Zalo hoặc email. Thông tin này được đính kèm vào yêu cầu để nhân viên tự xử lý, **không có kết nối tự động với Zalo**.
-- Nếu không có ứng dụng email mặc định, có nút sao chép nội dung để gửi thủ công.
+## Lưu ý vận hành
 
-## Cấu trúc
-- `src/app/`: tất cả routes (homepage, catalog, sản phẩm, giỏ hàng, checkout, liên hệ, đại lý, chính sách, kiến thức...).
-- `src/components/forms/`: các trường form tái sử dụng và các biểu mẫu.
-- `src/lib/form-validation.ts`: các quy tắc validation thuần TypeScript.
-- `src/styles/forms.css`: thiết kế và responsive form.
-- `src/data/site.ts`: logo, email, hotline và địa chỉ chính thức.
-- `src/data/products.ts`: danh mục, quy cách, giá và gallery sản phẩm.
-- `public/images/`: logo, favicon, ảnh tách nền, illustration.
-- `docs/PRODUCT_PRICES_TO_APPROVE.csv`: các giá còn cần công ty xác nhận.
-- `docs/RELEASE_NOTES_v1.6.md`: quy tắc validation, checklist kiểm thử thủ công.
+- **Biểu mẫu không gửi email tự động**: các form chuẩn bị nội dung và mở ứng dụng email của khách, khách phải bấm **Gửi / Send**. Có chức năng sao chép nội dung khi ứng dụng email không mở
+- Chưa có backend, database, cổng thanh toán hoặc lưu đơn tự động
+- Các giá công khai cần chủ doanh nghiệp duyệt theo từng SKU; sản phẩm chưa có giá vẫn hiện **Liên hệ báo giá / Request a quote**
+- Hình ảnh của bên thứ ba cần xác nhận quyền sử dụng trước khi đưa vào website thương mại chính thức
+- Bản ENG là **dịch giao diện phía client**, chưa có đường dẫn SEO riêng `/en` hoặc metadata tiếng Anh phía server. Nội dung trên nhãn chai trong ảnh vẫn giữ nguyên
+- Tệp `package-lock.json` không được đóng gói trong bản ZIP này. Khi cập nhật repository hiện có, **giữ lockfile đang có rồi chạy `npm install`** để đồng bộ phiên bản
 
-## Giới hạn cần biết trước khi công bố thương mại
-Các form hiện dùng `mailto:` — người dùng phải **bấm Gửi trong ứng dụng email**; website **không tự động lưu hoặc gửi đơn**, chưa có backend, cơ sở dữ liệu, thanh toán, quản trị tồn kho hoặc tự động tính phí vận chuyển. Validation ở client chỉ cải thiện UX, không thay thế kiểm tra phía server khi tích hợp backend.
-
-Giá là dữ liệu công khai chưa được doanh nghiệp duyệt đầy đủ. Cần xác nhận giá, chính sách bán hàng, quyền sử dụng ảnh, nội dung thương hiệu trước khi vận hành thật.
+Xem `docs/I18N_UI_UX_QA_v1.7.md` để biết phạm vi kiểm thử, các giới hạn và checklist nghiệm thu
