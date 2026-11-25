@@ -27,6 +27,5 @@ export default function BrandHeroReveal(){
       </div>
       <div className="brand-hero-info-actions"><Link href="/ve-pallas">Tìm hiểu công ty <ArrowUpRight size={16}/></Link><a href={`tel:${SITE.phone}`}><Phone size={15}/> {SITE.phoneDisplay}</a></div>
     </div>
-    <span className="brand-hero-hint">DI CHUỘT HOẶC CHẠM VÀO LOGO ĐỂ KHÁM PHÁ</span>
   </div>
 }
