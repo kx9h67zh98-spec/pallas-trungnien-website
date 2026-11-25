@@ -1,40 +1,45 @@
-# PALLAS – Trung Niên | Website v1.3
+# PALLAS – Trung Niên | Website v1.6
 
-Website bán và giới thiệu sản phẩm chăm sóc xe PALLAS, xây dựng bằng **Next.js 16 + React 19 + TypeScript**.
+Website giới thiệu và tiếp nhận yêu cầu mua hàng sản phẩm chăm sóc xe PALLAS, xây dựng trên **Next.js 16 + React 19 + TypeScript**. Bản v1.6 bao gồm trọn vẹn `src`, `public`, `docs`, `scripts`, `tests` và cấu hình project.
 
-## Cài đặt & chạy trên macOS / VS Code
-Yêu cầu Node.js **>=22.14**. Mở Terminal trong thư mục chứa `package.json`:
+## Cài đặt trên Mac
+Yêu cầu **Node.js >=22.14** và npm. Mở Terminal trong thư mục chứa `package.json`:
 
 ```bash
 npm install
 npm run dev
 ```
 
-Truy cập **http://localhost:3000**. Nếu cổng 3000 đã có ứng dụng khác, dừng tiến trình cũ bằng Ctrl+C.
-
-Kiểm tra:
+Truy cập http://localhost:3000. Khi đã kiểm tra giao diện, chạy:
 
 ```bash
+npm test
 npm run typecheck
 npm run lint
-npm test
 npm run build
 ```
 
-## Xem giao diện trước khi cài npm
-Mở `docs/preview.html` bằng trình duyệt. Đây là bản HTML tĩnh để xem kiểu dáng và **hover logo**. Ứng dụng Next.js chính thức chứa danh mục, chi tiết, tìm kiếm, bộ lọc và giỏ hàng.
+**Lưu ý:** Source ZIP được tạo trong môi trường không truy cập được npm registry nên không bao gồm `node_modules` hoặc `package-lock.json`. Chạy `npm install` trên Mac để tạo lockfile và cài đúng dependencies; sau đó giữ/commit `package-lock.json` để các bản sau cài đặt có tính tái lập.
 
-## Thư mục chính
-- `src/app/`: Route trang chủ, danh mục, chi tiết, giỏ hàng, liên hệ, báo giá đại lý, v.v.
-- `src/components/home/brand-hero-reveal.tsx`: Hero logo tương tác bằng chuột, bàn phím và cảm ứng.
-- `src/data/site.ts`: Logo, email, hotline, **địa chỉ chính thức**.
-- `src/data/products.ts`: Sản phẩm, dung tích, giá và gallery.
-- `src/styles/brand-hero.css`: Hiệu ứng hiển thị thông tin thương hiệu; phần còn lại trong `src/styles/`.
-- `public/images/`: Logo PALLAS, ảnh sản phẩm tách nền, danh mục.
-- `docs/PRODUCT_PRICES_TO_APPROVE.csv`: Bảng tổng hợp giá theo SKU và những thông tin còn thiếu.
-- `docs/RELEASE_NOTES_v1.3.md`: Ghi chú thay đổi, nguồn và checklist.
+## Thay đổi v1.6
+- Giao diện toàn site dựa trên v1.5, giữ hero thương hiệu tương tác, ảnh sản phẩm nền trong suốt, danh mục, giá và giỏ hàng.
+- Form **liên hệ**, **đại lý**, **yêu cầu đặt hàng** được thiết kế thống nhất, responsive và hỗ trợ keyboard.
+- Validation: trường bắt buộc, họ tên, điện thoại Việt Nam, email, độ dài nội dung, địa chỉ và xác nhận cung cấp thông tin. Lỗi hiển thị ngay tại trường và form tự focus lỗi đầu tiên.
+- Cho phép chọn cách phản hồi: điện thoại, Zalo hoặc email. Thông tin này được đính kèm vào yêu cầu để nhân viên tự xử lý, **không có kết nối tự động với Zalo**.
+- Nếu không có ứng dụng email mặc định, có nút sao chép nội dung để gửi thủ công.
 
-## Những điểm quan trọng trước khi xuất bản chính thức
-Hiện tại, nút gửi yêu cầu chỉ **mở ứng dụng email** chứa nội dung đơn hàng; khách cần tự nhấn gửi. Chưa có hệ thống quản lý đơn hàng, database, tính phí giao hàng, thanh toán trực tuyến hay admin. Giá trên website là giá công khai theo nguồn, chưa phải báo giá mới được duyệt. Các mã chưa xác định giá được ghi **Liên hệ báo giá** (không tự suy ra giá theo can/dung tích).
+## Cấu trúc
+- `src/app/`: tất cả routes (homepage, catalog, sản phẩm, giỏ hàng, checkout, liên hệ, đại lý, chính sách, kiến thức...).
+- `src/components/forms/`: các trường form tái sử dụng và các biểu mẫu.
+- `src/lib/form-validation.ts`: các quy tắc validation thuần TypeScript.
+- `src/styles/forms.css`: thiết kế và responsive form.
+- `src/data/site.ts`: logo, email, hotline và địa chỉ chính thức.
+- `src/data/products.ts`: danh mục, quy cách, giá và gallery sản phẩm.
+- `public/images/`: logo, favicon, ảnh tách nền, illustration.
+- `docs/PRODUCT_PRICES_TO_APPROVE.csv`: các giá còn cần công ty xác nhận.
+- `docs/RELEASE_NOTES_v1.6.md`: quy tắc validation, checklist kiểm thử thủ công.
 
-Thông tin công ty, giá và ảnh sản phẩm cần kiểm tra với PALLAS trước khi website hoạt động thương mại. Cụ thể xem `docs/RELEASE_NOTES_v1.3.md`.
+## Giới hạn cần biết trước khi công bố thương mại
+Các form hiện dùng `mailto:` — người dùng phải **bấm Gửi trong ứng dụng email**; website **không tự động lưu hoặc gửi đơn**, chưa có backend, cơ sở dữ liệu, thanh toán, quản trị tồn kho hoặc tự động tính phí vận chuyển. Validation ở client chỉ cải thiện UX, không thay thế kiểm tra phía server khi tích hợp backend.
+
+Giá là dữ liệu công khai chưa được doanh nghiệp duyệt đầy đủ. Cần xác nhận giá, chính sách bán hàng, quyền sử dụng ảnh, nội dung thương hiệu trước khi vận hành thật.

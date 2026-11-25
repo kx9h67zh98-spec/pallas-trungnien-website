@@ -34,7 +34,7 @@ test('exact-SKU published prices are displayed directly, not referenceFrom',()=>
 });
 test('cart and email order use actual item prices without inventing missing prices',()=>{
  for(const f of ['src/app/gio-hang/page.tsx','src/app/thanh-toan/page.tsx','src/components/layout/cart-drawer.tsx']){
-  const s=read(f);assert.ok(s.includes('p.price!=null'),f);assert.ok(s.includes('Liên hệ báo giá'),f)
+  const s=read(f);assert.ok(/(?:p|product)\.price!=null/.test(s),f);assert.ok(s.includes('Liên hệ báo giá'),f)
  }
  const checkout=read('src/app/thanh-toan/page.tsx');assert.ok(checkout.includes('mailto:'));assert.ok(checkout.includes('chưa tự động lưu đơn hàng'));assert.ok(!checkout.includes('api/payments'));
 });
