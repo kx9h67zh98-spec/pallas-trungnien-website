@@ -1,0 +1,8 @@
+import type {Metadata} from 'next';
+import Link from 'next/link';
+import {notFound} from 'next/navigation';
+import {ArrowLeft,ArrowUpRight,BookOpen} from 'lucide-react';
+import {articles,getArticle} from '@/data/articles';
+export function generateStaticParams(){return articles.map(a=>({slug:a.slug}))}
+export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{const {slug}=await params;return {title:getArticle(slug)?.title||'Bài viết'}}
+export default async function ArticlePage({params}:{params:Promise<{slug:string}>}){const {slug}=await params;const a=getArticle(slug);if(!a)notFound();return <><section className="article-header"><div className="container article-header-inner"><Link href="/kien-thuc" className="backlink"><ArrowLeft size={17}/> Tất cả bài viết</Link><span className="eyebrow">{a.category.toUpperCase()} · {a.readTime.toUpperCase()}</span><h1>{a.title}</h1><p>{a.excerpt}</p><div className="article-header-mark"><BookOpen size={65}/></div></div></section><article className="container prose-article"><p className="article-intro">Bài viết được biên tập nhằm cung cấp thông tin tham khảo về quy trình chăm sóc xe. Hãy ưu tiên hướng dẫn trên bao bì của từng sản phẩm.</p>{a.section.map((p,i)=><div key={i} className="article-paragraph"><span>{String(i+1).padStart(2,'0')}</span><p>{p}</p></div>)}<div className="article-note"><strong>Lưu ý an toàn</strong><p>Đọc kỹ nhãn sản phẩm, không pha trộn hóa chất không tương thích, bảo quản xa trẻ em và sử dụng thiết bị bảo hộ khi cần.</p></div><Link className="btn btn-outline" href="/san-pham">Khám phá sản phẩm PALLAS <ArrowUpRight size={19}/></Link></article></>}
