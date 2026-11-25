@@ -1,3 +1,44 @@
+# PALLAS – Trung Niên Full Website v1.8
+
+**Next.js 16 + React 19 + TypeScript · VIE/ENG · Premium Green UI**
+
+This archive contains the complete application source (`src`, `public`, `docs`, `tests`, scripts and configuration). It excludes `node_modules`, generated `.next` and secrets. It does not include `package-lock.json`: keep the existing lockfile from `PALLAS_GitHub` and let `npm install` update its root version on your Mac.
+
+## New in v1.8
+
+- Chuyển dung tích giữa các SKU thực sự cùng dòng PALLAS 120, Nano 30, Nano EX
+- So sánh tối đa 3 sản phẩm ở danh mục, bảng mobile có thể cuộn ngang
+- Báo giá nhanh từ trang chi tiết với kiểm tra họ tên, điện thoại, số lượng và checkbox đồng ý; hỗ trợ VIE/ENG
+- Animation xuất hiện khi cuộn, chuyển ảnh gallery, mở modal và hover nhẹ; tôn trọng Reduce motion
+- Giữ quy trình gửi qua email như v1.7; không tự lưu đơn/nhận thanh toán
+
+Chi tiết: `docs/RELEASE_NOTES_v1.8.md`, `docs/qa/QA_CHECKLIST_v1.8.md`.
+
+## Cập nhật vào repository trên Mac
+
+```bash
+rsync -av --exclude='.git' --exclude='package-lock.json' --exclude='node_modules' --exclude='.next' --exclude='.env*' \
+  ~/Downloads/PALLAS_Storefront_v1.8/ ~/Downloads/PALLAS_GitHub/
+cd ~/Downloads/PALLAS_GitHub
+npm install
+npm test
+npm run build
+npm run dev
+```
+
+Sau khi test trực tiếp trên trình duyệt thành công:
+
+```bash
+git status --short
+git add -A
+git commit -m "Release PALLAS v1.8 - Product experience and animations"
+git push origin main
+```
+
+**Lưu ý:** Chạy `npm run build` trên Mac trước khi push. Các ảnh, giá, công dụng và chính sách thương mại cần được phía công ty xác nhận trước go-live.
+
+---
+
 # PALLAS – Trung Niên Storefront v1.7
 
 Website thương mại PALLAS, phát triển với **Next.js 16 · React 19 · TypeScript**

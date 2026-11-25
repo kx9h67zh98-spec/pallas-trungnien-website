@@ -1,8 +1,8 @@
 {
   "name": "pallas-trungnien-storefront",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "private": true,
-  "description": "PALLAS Trung Niên bilingual VIE/ENG storefront with accessible responsive UI and validated enquiry forms",
+  "description": "PALLAS Trung Niên bilingual storefront with product variants, comparison, quick quotes, subtle motion and validated forms",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -5,6 +5,8 @@ import {T} from '@/components/i18n/t';
 import { useMemo, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import ProductCard from './product-card';
+import ProductComparison from './product-comparison';
+import {MAX_COMPARE_ITEMS,toggleComparison} from '@/lib/product-experience';
 import { products, categories } from '@/data/products';
 import { normalise } from '@/lib/format';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
@@ -16,6 +18,8 @@ export default function Catalog({ initialQ = '', initialCategory = '' }: {
  const [q, setQ] = useState(initialQ);
     const [cat, setCat] = useState(initialCategory);
     const [sort, setSort] = useState('featured');
+    const [compareSlugs,setCompareSlugs]=useState<string[]>([]);
+    const selectedProducts=compareSlugs.map(slug=>products.find(p=>p.slug===slug)).filter((p):p is (typeof products)[number]=>Boolean(p));
     const router = useRouter();
     const results = useMemo(() => { let arr = products.filter(p => (!cat || p.category === cat) && (!q || normalise(p.name + ' ' + translate(p.name,'en') + ' ' + p.summary + ' ' + translate(p.summary,'en') + ' ' + p.volume).includes(normalise(q)))); if (sort === 'price-asc')
         arr = [...arr].sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity)); if (sort === 'price-desc')
@@ -30,6 +34,7 @@ export default function Catalog({ initialQ = '', initialCategory = '' }: {
  <div className="catalog-main"><div className="catalog-toolbar"><form className="catalog-search" onSubmit={submit}><Search size={18}/><input aria-label={tr("Tìm sản phẩm")} value={q} onChange={e => setQ(e.target.value)} placeholder={tr("Tìm theo tên, dòng sản phẩm...",false)}/>{q && <button type="button" onClick={() => { setQ(''); router.replace('/san-pham' + (cat ? '?category=' + cat : ''), { scroll: false }); }} aria-label={tr("Xóa tìm kiếm")}><X size={15}/></button>}</form><select aria-label={tr("Sắp xếp sản phẩm")} value={sort} onChange={e => setSort(e.target.value)}><option value="featured">{tr("\u0110\u1EC1 xu\u1EA5t")}</option><option value="price-asc">{tr("Gi\u00E1: th\u1EA5p \u0111\u1EBFn cao")}</option><option value="price-desc">{tr("Gi\u00E1: cao \u0111\u1EBFn th\u1EA5p")}</option></select></div>
  <div className="mobile-category-scroll"><button className={!cat ? 'active' : ''} onClick={() => changeCat('')}><T vi={"T\u1EA5t c\u1EA3"}/></button>{categories.map(c => <button key={c.id} className={cat === c.id ? 'active' : ''} onClick={() => changeCat(c.id)}><T vi={c.label}/></button>)}</div>
  <div className="catalog-count"><T vi={"Hi\u1EC3n th\u1ECB "}/><b>{results.length}</b><T vi={" s\u1EA3n ph\u1EA9m "}/>{cat && <><T vi={"trong"}/> <T vi={categories.find(x=>x.id===cat)?.label??""}/></>}</div>
- {results.length ? <div className="product-grid">{results.map(p => <ProductCard key={p.slug} product={p}/>)}</div> : <div className="empty-results"><Search size={38}/><h3><T vi={"Ch\u01B0a t\u00ECm th\u1EA5y s\u1EA3n ph\u1EA9m ph\u00F9 h\u1EE3p"}/></h3><p><T vi={"H\u00E3y th\u1EED t\u1EEB kh\u00F3a kh\u00E1c ho\u1EB7c xem t\u1EA5t c\u1EA3 s\u1EA3n ph\u1EA9m."}/></p><button className="btn btn-outline" onClick={() => { setQ(''); changeCat(''); }}><T vi={"X\u00F3a b\u1ED9 l\u1ECDc"}/></button></div>}
+ {results.length ? <div className="product-grid">{results.map(p => <ProductCard key={p.slug} product={p} compare={{selected:compareSlugs.includes(p.slug),disabled:compareSlugs.length>=MAX_COMPARE_ITEMS,onToggle:()=>setCompareSlugs(current=>toggleComparison(current,p.slug))}}/>)}</div> : <div className="empty-results"><Search size={38}/><h3><T vi={"Ch\u01B0a t\u00ECm th\u1EA5y s\u1EA3n ph\u1EA9m ph\u00F9 h\u1EE3p"}/></h3><p><T vi={"H\u00E3y th\u1EED t\u1EEB kh\u00F3a kh\u00E1c ho\u1EB7c xem t\u1EA5t c\u1EA3 s\u1EA3n ph\u1EA9m."}/></p><button className="btn btn-outline" onClick={() => { setQ(''); changeCat(''); }}><T vi={"X\u00F3a b\u1ED9 l\u1ECDc"}/></button></div>}
+ <ProductComparison selected={selectedProducts} onRemove={slug=>setCompareSlugs(s=>s.filter(x=>x!==slug))} onClear={()=>setCompareSlugs([])}/>
  </div></div>;
 }
