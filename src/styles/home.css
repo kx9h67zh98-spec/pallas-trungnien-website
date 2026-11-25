@@ -9,58 +9,40 @@
 .category-picture{background:#fff}.category-picture img{object-fit:contain;padding:7px}
 .category-tile:nth-child(2) .category-picture,.category-tile:nth-child(4) .category-picture{filter:none}
 
-/* Hero typography refinement */
-
+/* v1.4 — hero heading on one line on wide screens, with natural mobile wrapping. */
 .hero .hero-title-clean {
-  font-weight: 800;
-  letter-spacing: -0.055em;
-  line-height: 1.08;
   max-width: none;
+  margin: 32px 0 26px;
+  font-weight: 800;
+  letter-spacing: -.055em;
+  line-height: 1.08;
   text-wrap: balance;
 }
-
 .hero .hero-title-clean em {
+  color: var(--lime);
   font-style: normal;
-  color: #daf467;
 }
-
-/* Desktop: one-line heading */
-
 @media (min-width: 1200px) {
-  .hero-layout {
-    grid-template-columns: 1.35fr 0.65fr;
-  }
-
-  .hero-visual {
-    left: 61%;
-  }
-
+  .hero-layout { grid-template-columns: 1.35fr .65fr; }
+  .hero-visual { left: 61%; }
   .hero .hero-title-clean {
-    font-size: clamp(38px, 3.6vw, 54px);
+    font-size: clamp(38px, 3.2vw, 48px);
     white-space: nowrap;
+    text-wrap: nowrap;
   }
 }
-
-/* Tablet: natural wrapping */
-
 @media (min-width: 701px) and (max-width: 1199px) {
   .hero .hero-title-clean {
     font-size: clamp(36px, 4.5vw, 54px);
     white-space: normal;
   }
+  .hero .hero-title-clean em { white-space: normal; }
 }
-
-/* Mobile */
-
 @media (max-width: 700px) {
   .hero .hero-title-clean {
     font-size: clamp(42px, 9vw, 62px);
     line-height: 1.08;
     white-space: normal;
-    letter-spacing: -0.05em;
   }
-
-  .hero .hero-title-clean em {
-    white-space: normal;
-  }
+  .hero .hero-title-clean em { white-space: normal; }
 }
