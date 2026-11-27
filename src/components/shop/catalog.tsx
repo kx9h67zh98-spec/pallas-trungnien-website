@@ -7,7 +7,8 @@ import { useRouter } from 'next/navigation';
 import ProductCard from './product-card';
 import ProductComparison from './product-comparison';
 import {MAX_COMPARE_ITEMS,toggleComparison} from '@/lib/product-experience';
-import { products, categories } from '@/data/products';
+import { categories } from '@/data/products';
+import {useShop} from '@/components/shop/shop-provider';
 import { normalise } from '@/lib/format';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 export default function Catalog({ initialQ = '', initialCategory = '' }: {
@@ -15,6 +16,7 @@ export default function Catalog({ initialQ = '', initialCategory = '' }: {
     initialCategory?: string;
 }) {
     const {tr}=useLanguage();
+    const {products}=useShop();
  const [q, setQ] = useState(initialQ);
     const [cat, setCat] = useState(initialCategory);
     const [sort, setSort] = useState('featured');
@@ -23,7 +25,7 @@ export default function Catalog({ initialQ = '', initialCategory = '' }: {
     const router = useRouter();
     const results = useMemo(() => { let arr = products.filter(p => (!cat || p.category === cat) && (!q || normalise(p.name + ' ' + translate(p.name,'en') + ' ' + p.summary + ' ' + translate(p.summary,'en') + ' ' + p.volume).includes(normalise(q)))); if (sort === 'price-asc')
         arr = [...arr].sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity)); if (sort === 'price-desc')
-        arr = [...arr].sort((a, b) => (b.price ?? -1) - (a.price ?? -1)); return arr; }, [q, cat, sort]);
+        arr = [...arr].sort((a, b) => (b.price ?? -1) - (a.price ?? -1)); return arr; }, [q, cat, sort, products]);
     const changeCat = (newCat: string) => { setCat(newCat); const params = new URLSearchParams(); if (q)
         params.set('q', q); if (newCat)
         params.set('category', newCat); router.replace('/san-pham' + (params.size ? '?' + params.toString() : ''), { scroll: false }); };

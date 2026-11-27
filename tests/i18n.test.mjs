@@ -30,7 +30,7 @@ test('English product titles, highlights and generic summaries are translated',(
 test('English names and article content have curated translations',()=>{
  const s=read('src/data/products.ts');
  const names=[...s.matchAll(/"name":\s*"([^"\\]+)"/g)].map(m=>m[1]);
- assert.equal(names.length,23);
+ assert.equal(names.length,32);
  names.forEach(name=>assert.ok(isTranslated(name),name));
  const article=read('src/data/articles.ts');
  for(const phrase of ['5 bước chăm sóc xe tại nhà gọn gàng, đúng quy trình','Rửa xe không chạm và bọt tuyết truyền thống khác nhau thế nào?','Chọn dung tích hóa chất phù hợp với quy mô garage','Những điều cần lưu ý khi vệ sinh và dưỡng bóng lốp'])assert.ok(isTranslated(phrase),phrase);
@@ -50,7 +50,7 @@ test('i18n translation coverage has a minimum curated dictionary and no unreview
 test('entire product and article data is covered by translations or deliberate brand names', async()=>{
  const {products,categories}=await import('../src/data/products.ts');
  const {articles}=await import('../src/data/articles.ts');
- assert.equal(products.length,23);assert.equal(categories.length,5);assert.equal(articles.length,4);
+ assert.equal(products.length,32);assert.equal(categories.length,5);assert.equal(articles.length,4);
  for(const c of categories)for(const x of [c.label,c.caption])assert.ok(isTranslated(x),`category: ${x}`);
  for(const p of products){
   for(const x of [p.name,p.shortName,p.summary,p.usage,p.volume,p.note??'',...(p.highlights??[]),p.badge??''].filter(Boolean)){

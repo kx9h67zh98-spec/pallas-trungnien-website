@@ -1,8 +1,8 @@
 {
   "name": "pallas-trungnien-storefront",
-  "version": "1.8.0",
+  "version": "1.9.3",
   "private": true,
-  "description": "PALLAS Trung Niên bilingual storefront with product variants, comparison, quick quotes, subtle motion and validated forms",
+  "description": "PALLAS v1.9.3 Midnight original transparent logo, verified 15 March 2026 price catalog and product-only imagery",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -19,7 +19,8 @@
     "next": "16.4.6",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "lucide-react": "0.468.0"
+    "lucide-react": "0.468.0",
+    "server-only": "0.0.1"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

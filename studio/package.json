@@ -1,0 +1,8 @@
+{
+  "name":"pallas-editor-v1.9",
+  "version":"1.9.0",
+  "private":true,
+  "scripts":{"dev":"sanity dev","build":"sanity build","deploy":"sanity deploy","schema":"sanity schemas deploy"},
+  "dependencies":{"@sanity/vision":"^4.0.0","sanity":"^4.0.0","react":"^19.0.0","react-dom":"^19.0.0"},
+  "devDependencies":{"typescript":"^5.9.3","@types/react":"^19.0.0"}
+}

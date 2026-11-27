@@ -7,6 +7,10 @@ export interface Product {
   category: CategoryId;
   volume: string;
   price: number | null;
+  unit?: string;
+  packQuantity?: number | null;
+  priceSheetRow?: number;
+  priceSheetDate?: string;
   referenceFrom?: number | null;
   gallery?: string[];
   note?: string;

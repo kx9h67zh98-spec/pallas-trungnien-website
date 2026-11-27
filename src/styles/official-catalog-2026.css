@@ -1,0 +1,9 @@
+/* PALLAS official price catalogue (15 March 2026) – product photography only */
+.price-sheet-note{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:25px;margin-bottom:0;background:#19191c;border:1px solid #4b3d24;border-radius:12px;padding:14px 20px;color:#ece7dc;font-size:13px;line-height:1.6}
+.price-sheet-note strong{color:#ebcc7e;font-size:13px;font-weight:750;white-space:nowrap}
+.price-sheet-note span{max-width:920px;color:#dbd5c9}
+.official-price-context{margin-top:6px!important;color:#796b4d!important;font-size:11px!important;line-height:1.5!important}
+.product-image-wrap img,.detail-main-image img,.gallery-thumbnails img,.compare-product-photo img,.drawer-line-photo img,.cart-row-photo img{object-fit:contain!important}
+.product-image-wrap img{padding:11px!important}
+.gallery-thumbnails img{padding:7px!important}
+@media(max-width:640px){.price-sheet-note{margin-top:15px;padding:12px 14px;font-size:12px}}

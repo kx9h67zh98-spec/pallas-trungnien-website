@@ -26,7 +26,7 @@ test('homepage uses logo information panel and preserves keyboard access',()=>{
 });
 test('product pricing uses exact SKU and never derives unverified prices',()=>{
  const raw=read('src/data/products.ts');
- const required={'pallas-120-6l':310000,'pallas-120-21l':970000,'nano-30-1-5l':93000,'nano-ex-6l':480000,'fruitwash-apple-1-5l':83000};
+ const required={'pallas-120-6l':310000,'pallas-120-21l':970000,'pallas-60-21l':720000,'nano-ex-6l':480000,'nuoc-rua-xe-sieu-bong-1-5l':83000};
  for(const [slug,price] of Object.entries(required))assert.ok(new RegExp(`"slug": "${slug}"[\\s\\S]*?"price": ${price}`).test(raw),slug);
  const ref=read('src/components/shop/reference-price.tsx');
  match(ref,/p\.price\s*!=\s*null/);assert.ok(!ref.includes('p.referenceFrom'));

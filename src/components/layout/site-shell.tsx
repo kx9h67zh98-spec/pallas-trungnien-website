@@ -6,8 +6,13 @@ import Header from './header';
 import RevealOnScroll from './reveal-on-scroll';
 import CartDrawer from './cart-drawer';
 import { Phone } from 'lucide-react';
-import { SITE } from '@/data/site';
-export default function SiteShell({ children, footer }: {
+import {SiteSettingsProvider,useSite} from '@/components/layout/site-settings-provider';
+import type {Product} from '@/types';
+import type {SiteInfo} from '@/lib/content-types';
+export default function SiteShell({ children, footer, products, site }: {
     children: ReactNode;
     footer: ReactNode;
-}) { return <ShopProvider><RevealOnScroll/><Header /><main id="main-content">{children}</main>{footer}<CartDrawer /><a className="float-contact" href={`tel:${SITE.phone}`} aria-label="PALLAS hotline"><Phone size={21}/><span><T vi={"G\u1ECDi t\u01B0 v\u1EA5n"}/></span></a></ShopProvider>; }
+    products: Product[];
+    site: SiteInfo;
+}) { return <SiteSettingsProvider value={site}><ShopProvider products={products}><RevealOnScroll/><Header /><main id="main-content">{children}</main>{footer}<CartDrawer /><FloatContact/></ShopProvider></SiteSettingsProvider>; }
+function FloatContact(){const site=useSite();return <a className="float-contact" href={`tel:${site.phone}`} aria-label="PALLAS hotline"><Phone size={21}/><span><T vi="Gọi tư vấn"/></span></a>}

@@ -4,35 +4,41 @@ import {T} from '@/components/i18n/t';
 import { useMemo, useRef, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight, Check, ClipboardCopy, Info, LockKeyhole, Mail, PackageCheck, Phone, ShieldCheck } from 'lucide-react';
-import { getProduct } from '@/data/products';
-import { SITE } from '@/data/site';
+import {useSite} from '@/components/layout/site-settings-provider';
 import { money } from '@/lib/format';
 import { cleanFormText, contactMethods, validateCheckout, type CheckoutValues } from '@/lib/form-validation';
 import { FormConsent, FormInput, FormSelect, FormTextarea } from '@/components/forms/form-controls';
+import {directEnquiryEnabled,submitDirectEnquiry} from '@/lib/netlify-forms';
 import { useShop } from '@/components/shop/shop-provider';
 const initial: CheckoutValues = { name: '', phone: '', email: '', address: '', note: '', contactMethod: 'Điện thoại', consent: false };
 type FieldName = keyof CheckoutValues;
 export default function Checkout() {
+    const SITE=useSite();
     const {tr,language}=useLanguage();
-    const { items, subtotal } = useShop();
+    const { items, subtotal, findProduct } = useShop();
     const [values, setValues] = useState<CheckoutValues>(initial);
     const [touched, setTouched] = useState<Partial<Record<FieldName, boolean>>>({});
     const [attempted, setAttempted] = useState(false);
     const [draft, setDraft] = useState('');
     const [copied, setCopied] = useState(false);
     const [copyFailed, setCopyFailed] = useState(false);
+    const [sending,setSending]=useState(false);
+    const [submitted,setSubmitted]=useState(false);
+    const [sendError,setSendError]=useState(false);
+    const [fallbackEmail,setFallbackEmail]=useState('');
     const formRef = useRef<HTMLFormElement>(null);
     const errors = useMemo(() => validateCheckout(values), [values]);
-    const hasUnpriced = items.some(x => getProduct(x.slug)?.price == null);
+    const hasUnpriced = items.some(x => findProduct(x.slug)?.price == null);
     const showError = (name: FieldName) => (attempted || touched[name]) ? errors[name] : undefined;
     const update = <K extends FieldName>(name: K, value: CheckoutValues[K]) => {
         setValues(prev => ({ ...prev, [name]: value }));
         setDraft('');
+        setSubmitted(false);setSendError(false);
         setCopied(false);
         setCopyFailed(false);
     };
     const blur = (name: FieldName) => () => setTouched(prev => ({ ...prev, [name]: true }));
-    function submit(event: FormEvent<HTMLFormElement>) {
+    async function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setAttempted(true);
         const nextErrors = validateCheckout(values);
@@ -42,7 +48,7 @@ export default function Checkout() {
             return;
         }
         const lines = items.flatMap((item, index) => {
-            const product = getProduct(item.slug);
+            const product = findProduct(item.slug);
             if (!product)
                 return [];
             return [`${index + 1}. ${tr(product.name,false)} × ${item.quantity} — ${product.price != null ? money(product.price * item.quantity) : tr('Liên hệ báo giá')}`];
@@ -65,7 +71,19 @@ export default function Checkout() {
         setDraft(body);
         setCopied(false);
         setCopyFailed(false);
-        window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        const emailUrl=`mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        setFallbackEmail(emailUrl);
+        if(directEnquiryEnabled){
+          setSending(true);setSendError(false);setSubmitted(false);
+          try {
+            await submitDirectEnquiry('pallas-order',{
+              name:values.name,phone:values.phone,email:values.email,address:values.address,
+              contactMethod:values.contactMethod,note:values.note,orderLines:lines.join('\n'),
+              subtotal:subtotal,language,consent:values.consent,source:window.location.pathname
+            });
+            setSubmitted(true);
+          } catch {setSendError(true)} finally {setSending(false)}
+        } else window.location.href=emailUrl;
     }
     async function copyDraft() {
         try {
@@ -99,14 +117,16 @@ export default function Checkout() {
             <FormSelect id="checkout-contactMethod" name="contactMethod" label="Xác nhận đơn qua" value={values.contactMethod} onChange={v => update('contactMethod', v)} onBlur={blur('contactMethod')} error={showError('contactMethod')} options={contactMethods} full required/>
             <FormTextarea id="checkout-note" name="note" label="Ghi chú (không bắt buộc)" value={values.note} onChange={v => update('note', v)} onBlur={blur('note')} error={showError('note')} maxLength={1000} rows={4} placeholder="Ví dụ: Giao trong giờ hành chính, cần xuất hóa đơn..." full/>
           </div>
-          <FormConsent id="checkout-consent" checked={values.consent} onChange={v => update('consent', v)} error={showError('consent')}><T vi={"T\u00F4i \u0111\u1ED3ng \u00FD cung c\u1EA5p th\u00F4ng tin n\u00E0y \u0111\u1EC3 PALLAS li\u00EAn h\u1EC7 x\u00E1c nh\u1EADn \u0111\u01A1n h\u00E0ng. T\u00F4i hi\u1EC3u c\u1EA7n ch\u1EE7 \u0111\u1ED9ng nh\u1EA5n G\u1EEDi trong \u1EE9ng d\u1EE5ng email."}/></FormConsent>
-          <button type="submit" className="btn btn-primary form-primary-action"><Mail size={19}/><T vi={" Chu\u1EA9n b\u1ECB email y\u00EAu c\u1EA7u \u0111\u1EB7t h\u00E0ng "}/><ArrowUpRight size={18}/></button>
-          <p className="form-process-note"><ShieldCheck size={17}/><T vi={" Website ch\u01B0a t\u1EF1 \u0111\u1ED9ng l\u01B0u \u0111\u01A1n h\u00E0ng ho\u1EB7c thu ti\u1EC1n. Email s\u1EBD m\u1EDF \u0111\u1EC3 b\u1EA1n ki\u1EC3m tra v\u00E0 nh\u1EA5n "}/><strong><T vi={"G\u1EEDi"}/></strong></p>
-          {draft && <div className="form-draft-notice" role="status"><Check size={19}/><div><strong><T vi={"\u0110\u00E3 chu\u1EA9n b\u1ECB n\u1ED9i dung y\u00EAu c\u1EA7u"}/></strong><p><T vi={"N\u1EBFu \u1EE9ng d\u1EE5ng email kh\u00F4ng m\u1EDF, sao ch\u00E9p n\u1ED9i dung v\u00E0 g\u1EEDi \u0111\u1EBFn "}/><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p><button type="button" className="form-copy-button" onClick={copyDraft}><ClipboardCopy size={15}/>{tr(copied ? 'Đã sao chép' : 'Sao chép nội dung yêu cầu')}</button>{copyFailed && <p className="form-field-error"><T vi={"Kh\u00F4ng th\u1EC3 sao ch\u00E9p t\u1EF1 \u0111\u1ED9ng, vui l\u00F2ng m\u1EDF \u1EE9ng d\u1EE5ng email."}/></p>}</div></div>}
+          <FormConsent id="checkout-consent" checked={values.consent} onChange={v => update('consent', v)} error={showError('consent')}>{directEnquiryEnabled?<T vi="Tôi đồng ý gửi thông tin này đến PALLAS qua biểu mẫu trên website để được liên hệ xác nhận"/>:<T vi={"T\u00F4i \u0111\u1ED3ng \u00FD cung c\u1EA5p th\u00F4ng tin n\u00E0y \u0111\u1EC3 PALLAS li\u00EAn h\u1EC7 x\u00E1c nh\u1EADn \u0111\u01A1n h\u00E0ng. T\u00F4i hi\u1EC3u c\u1EA7n ch\u1EE7 \u0111\u1ED9ng nh\u1EA5n G\u1EEDi trong \u1EE9ng d\u1EE5ng email."}/>}</FormConsent>
+          <button type="submit" disabled={sending||submitted} className="btn btn-primary form-primary-action"><Mail size={19}/>{directEnquiryEnabled?(language==='en'?(sending?'Sending...':'Send order enquiry'):(sending?'Đang gửi...':'Gửi yêu cầu đặt hàng')):<T vi="Chuẩn bị email yêu cầu đặt hàng"/>}<ArrowUpRight size={18}/></button>
+          {!directEnquiryEnabled&&<p className="form-process-note"><ShieldCheck size={17}/><T vi={" Website ch\u01B0a t\u1EF1 \u0111\u1ED9ng l\u01B0u \u0111\u01A1n h\u00E0ng ho\u1EB7c thu ti\u1EC1n. Email s\u1EBD m\u1EDF \u0111\u1EC3 b\u1EA1n ki\u1EC3m tra v\u00E0 nh\u1EA5n "}/><strong><T vi={"G\u1EEDi"}/></strong></p>}
+          {submitted&&<p className="form-direct-success" role="status">{language==='en'?'Order enquiry submitted. PALLAS will confirm availability and the final total':'Đã tiếp nhận yêu cầu đặt hàng. PALLAS sẽ xác nhận tồn kho và số tiền cuối cùng'}</p>}
+          {sendError&&<p className="form-validation-summary" role="alert">{language==='en'?'Automatic sending failed. Please send using email':'Chưa gửi tự động được, vui lòng gửi qua email'} {fallbackEmail&&<a className="form-fallback-link" href={fallbackEmail}>{language==='en'?'Open email':'Mở ứng dụng email'}</a>}</p>}
+          {draft && !submitted && <div className="form-draft-notice" role="status"><Check size={19}/><div><strong><T vi={"\u0110\u00E3 chu\u1EA9n b\u1ECB n\u1ED9i dung y\u00EAu c\u1EA7u"}/></strong><p><T vi={"N\u1EBFu \u1EE9ng d\u1EE5ng email kh\u00F4ng m\u1EDF, sao ch\u00E9p n\u1ED9i dung v\u00E0 g\u1EEDi \u0111\u1EBFn "}/><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p><button type="button" className="form-copy-button" onClick={copyDraft}><ClipboardCopy size={15}/>{tr(copied ? 'Đã sao chép' : 'Sao chép nội dung yêu cầu')}</button>{copyFailed && <p className="form-field-error"><T vi={"Kh\u00F4ng th\u1EC3 sao ch\u00E9p t\u1EF1 \u0111\u1ED9ng, vui l\u00F2ng m\u1EDF \u1EE9ng d\u1EE5ng email."}/></p>}</div></div>}
         </form>
         <aside className="checkout-summary checkout-order-card">
           <div className="checkout-summary-heading"><span className="form-step-label"><T vi={"03 / \u0110\u01A0N H\u00C0NG"}/></span><h3><T vi={"\u0110\u01A1n h\u00E0ng c\u1EE7a b\u1EA1n"}/></h3><p>{items.reduce((acc, item) => acc + item.quantity, 0)}<T vi={" s\u1EA3n ph\u1EA9m trong gi\u1ECF"}/></p></div>
-          {items.map(item => { const product = getProduct(item.slug); if (!product)
+          {items.map(item => { const product = findProduct(item.slug); if (!product)
                 return null; return <div key={item.slug} className="checkout-product"><span><T vi={product.shortName}/><small><T vi={" \u00D7 "}/>{item.quantity}</small></span><strong>{product.price != null ? money(product.price * item.quantity) : tr('Liên hệ báo giá')}</strong></div>; })}
           <div className="summary-total"><span>{tr(hasUnpriced ? 'Tạm tính sản phẩm đã có giá' : 'Tạm tính')}</span><strong>{subtotal === 0 && hasUnpriced ? tr('Liên hệ báo giá') : money(subtotal)}</strong></div>
           <div className="checkout-price-note"><Info size={17}/><p><T vi={"Ph\u00ED v\u1EADn chuy\u1EC3n, t\u1ED3n kho v\u00E0 gi\u00E1 cu\u1ED1i c\u00F9ng s\u1EBD \u0111\u01B0\u1EE3c x\u00E1c nh\u1EADn sau khi PALLAS nh\u1EADn y\u00EAu c\u1EA7u."}/>{hasUnpriced ? tr(' Một số mặt hàng cần báo giá riêng.') : ''}</p></div>

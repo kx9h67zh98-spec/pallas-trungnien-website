@@ -4,8 +4,9 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUpRight, CalendarDays, MapPin, Factory, MoveUpRight, Phone, X, } from 'lucide-react';
-import { SITE } from '@/data/site';
+import {useSite} from '@/components/layout/site-settings-provider';
 export default function BrandHeroReveal() {
+    const SITE=useSite();
     const [expanded, setExpanded] = useState(false);
     return (<div className={`brand-hero-stage${expanded ? ' is-open' : ''}`} onPointerLeave={(event) => {
             if (event.pointerType === 'mouse')

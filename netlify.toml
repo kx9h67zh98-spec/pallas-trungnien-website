@@ -1,0 +1,21 @@
+# Legacy URL mappings used only when the new website is hosted on Netlify.
+# Review the complete legacy URL inventory before changing the production domain.
+[[redirects]]
+from = "/gioi-thieu"
+to = "/ve-pallas"
+status = 301
+
+[[redirects]]
+from = "/blog"
+to = "/kien-thuc"
+status = 301
+
+[[redirects]]
+from = "/bot-tuyet-sieu-bong-son"
+to = "/san-pham?category=foam"
+status = 301
+
+[[redirects]]
+from = "/nuoc-lau-kinh-pallas"
+to = "/san-pham/nuoc-lau-kinh-pallas-3l"
+status = 301

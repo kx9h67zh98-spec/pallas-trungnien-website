@@ -2,9 +2,16 @@ import type {Product} from '../types/index.ts';
 
 /** Only families verified as different pack sizes of the same product are linked. */
 export const PRODUCT_VARIANT_GROUPS = {
-  'pallas-120': ['pallas-120-1-5l', 'pallas-120-6l', 'pallas-120-21l'],
-  'nano-30': ['nano-30-1-5l', 'nano-30-6l', 'nano-30-21l'],
-  'nano-ex': ['nano-ex-1-5l', 'nano-ex-6l'],
+ 'pallas-120': ['pallas-120-1-5l', 'pallas-120-6l', 'pallas-120-21l'],
+ 'pallas-60': ['pallas-60-6l', 'pallas-60-21l'],
+ 'nano-ex': ['nano-ex-1-5l', 'nano-ex-6l'],
+ 'wax-lop': ['wax-lop-pallas-1-5l', 'wax-lop-pallas-6l', 'wax-lop-pallas-21l'],
+ 'wax-son': ['wax-son-pallas-120ml','wax-son-pallas-333ml','wax-son-pallas-1-5l','wax-son-pallas-6l'],
+ 'tay-rua-may': ['tay-rua-may-pallas-620ml','tay-rua-may-pallas-1-5l','tay-rua-may-pallas-3l'],
+ 'tay-trang': ['tay-trang-da-nang-620ml','tay-trang-da-nang-500ml','tay-trang-da-nang-3l'],
+ 'lau-kinh': ['nuoc-lau-kinh-pallas-620ml','nuoc-lau-kinh-pallas-3l'],
+ 'trang-suc': ['kem-bot-sieu-bong-trang-suc-60ml','kem-bot-sieu-bong-trang-suc-120ml','kem-bot-sieu-bong-trang-suc-160ml'],
+ 'binh-phun-bot-tuyet': ['binh-phun-bot-tuyet-20l','binh-phun-bot-tuyet-30l','binh-phun-bot-tuyet-40l','binh-phun-bot-tuyet-60l'],
 } as const;
 
 export function getProductVariants(slug: string, allProducts: readonly Product[]): Product[] {

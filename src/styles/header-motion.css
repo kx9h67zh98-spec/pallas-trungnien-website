@@ -1,0 +1,103 @@
+/* PALLAS v1.9.2 — premium header motion; hover only on pointer devices.
+   No JS/animation library. Keyboard focus has the same visual affordance. */
+@media (hover:hover) and (pointer:fine){
+  .site-header .brand-link{
+    transform:translateZ(0);
+    transition:transform .28s cubic-bezier(.22,1,.36,1);
+  }
+  .site-header .brand-link:hover,
+  .site-header .brand-link:focus-visible{transform:translateY(-2px)}
+  .site-header .brand-image{
+    transition:border-color .32s ease,box-shadow .32s ease,transform .32s cubic-bezier(.22,1,.36,1);
+  }
+  .site-header .brand-link:hover .brand-image,
+  .site-header .brand-link:focus-visible .brand-image{
+    border-color:rgba(232,196,118,.65);
+    box-shadow:0 0 0 1px rgba(232,196,118,.15),0 0 22px rgba(232,196,118,.12);
+    transform:scale(1.025);
+  }
+  .site-header .brand-name b{transition:color .28s ease}
+  .site-header .brand-link:hover .brand-name b{color:var(--pallas-gold-bright)}
+
+  /* Navigation: subtle lift + champagne glow + a red-to-gold animated trace. */
+  .site-header .main-nav a{
+    display:inline-flex;align-items:center;justify-content:center;
+    padding:12px 10px;margin:-12px -10px;min-height:38px;
+    position:relative;isolation:isolate;
+    transition:color .25s ease,transform .32s cubic-bezier(.22,1,.36,1),text-shadow .25s ease;
+  }
+  .site-header .main-nav a::before{
+    content:"";position:absolute;inset:3px 1px;z-index:-1;
+    background:linear-gradient(115deg,rgba(232,196,118,.10),rgba(216,63,64,.055));
+    border:1px solid rgba(232,196,118,.11);
+    border-radius:10px;opacity:0;transform:scale(.90);
+    transition:opacity .28s ease,transform .32s cubic-bezier(.22,1,.36,1);
+  }
+  .site-header .main-nav a::after{
+    content:"";position:absolute;left:17%;right:17%;bottom:1px;height:2px;
+    background:linear-gradient(90deg,var(--pallas-red),var(--pallas-gold-bright));
+    border-radius:20px;box-shadow:0 0 10px rgba(232,196,118,.22);
+    opacity:0;transform:scaleX(0);transform-origin:center;
+    transition:transform .32s cubic-bezier(.22,1,.36,1),opacity .2s ease;
+  }
+  .site-header .main-nav a:hover,
+  .site-header .main-nav a:focus-visible{
+    color:var(--pallas-gold-bright);transform:translateY(-2px);
+    text-shadow:0 0 15px rgba(232,196,118,.17);
+  }
+  .site-header .main-nav a:hover::before,
+  .site-header .main-nav a:focus-visible::before{opacity:1;transform:scale(1)}
+  .site-header .main-nav a:hover::after,
+  .site-header .main-nav a:focus-visible::after{opacity:1;transform:scaleX(1)}
+  .site-header .main-nav a.active::after{
+    opacity:.95;transform:scaleX(1);bottom:1px;height:2px;
+  }
+  .site-header .main-nav a.active:not(:hover):not(:focus-visible)::before{opacity:.28;transform:scale(1)}
+  .site-header .main-nav a.active:hover::after{height:3px}
+  /* Search, cart and language follow the same design grammar. */
+  .site-header .icon-button{
+    transition:background .25s ease,color .25s ease,box-shadow .25s ease,transform .32s cubic-bezier(.22,1,.36,1);
+  }
+  .site-header .icon-button:hover,.site-header .icon-button:focus-visible{
+    transform:translateY(-2px);
+    background:rgba(232,196,118,.10);
+    color:var(--pallas-gold-bright);
+    box-shadow:0 0 0 1px rgba(232,196,118,.20) inset;
+  }
+  .site-header .icon-button svg{transition:transform .3s cubic-bezier(.22,1,.36,1)}
+  .site-header .icon-button:hover svg{transform:scale(1.12) rotate(-5deg)}
+  .site-header .cart-toggle:hover svg{transform:rotate(8deg) scale(1.08)}
+  .site-header .language-switch button{transition:background .22s ease,color .22s ease,transform .25s ease,box-shadow .25s ease}
+  .site-header .language-switch button:hover:not(.active),
+  .site-header .language-switch button:focus-visible:not(.active){
+    color:var(--pallas-gold-bright)!important;
+    background:rgba(232,196,118,.15)!important;transform:translateY(-1px);
+  }
+  .topline-inner>a{transition:color .22s ease,transform .22s ease}
+  .topline-inner>a:hover{color:var(--pallas-gold-bright);transform:translateX(-2px)}
+}
+/* Desktop active item remains highlighted even without a hover device. */
+.site-header .main-nav a.active:after{
+  bottom:1px;height:2px;
+  background:linear-gradient(90deg,var(--pallas-red),var(--pallas-gold));
+}
+/* Touch: retain a visible press response but avoid hover-only states sticking. */
+@media (max-width:960px){
+  .site-header .mobile-menu nav a{
+    padding-left:10px;padding-right:10px;border-radius:8px;
+    transition:color .22s ease,background .22s ease,transform .22s ease;
+  }
+  .site-header .mobile-menu nav a:active,
+  .site-header .mobile-menu nav a:focus-visible{
+    color:var(--pallas-gold-bright);
+    background:rgba(232,196,118,.10);transform:translateX(4px);
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .site-header .brand-link,.site-header .brand-image,.site-header .brand-name b,
+  .site-header .main-nav a,.site-header .main-nav a::before,.site-header .main-nav a::after,
+  .site-header .icon-button,.site-header .icon-button svg,
+  .site-header .language-switch button,.site-header .mobile-menu nav a,.topline-inner>a{
+    transition:none!important;animation:none!important;transform:none!important;
+  }
+}

@@ -7,7 +7,8 @@ export const SITE = {
   website: 'https://pallas-trungnien.com',
   address: '121/2B Khiếu Năng Tĩnh, Phường An Lạc, Thành phố Hồ Chí Minh, Việt Nam',
   location: '121/2B Khiếu Năng Tĩnh, Phường An Lạc, Thành phố Hồ Chí Minh, Việt Nam',
-  logo: '/images/brand/pallas-logo-original.jpg',
+  // Logo PALLAS gốc từ cPanel, giữ nguyên nền alpha. Hiển thị trên nền đen Midnight.
+  logo: '/images/brand/pallas-logo-original-transparent.png',
   tagline: 'Giải pháp chăm sóc xe chuyên dụng',
 };
 export const MENU = [

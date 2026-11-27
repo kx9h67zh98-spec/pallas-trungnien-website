@@ -1,9 +1,11 @@
+'use client';
 import {T} from '@/components/i18n/t';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowUpRight, Mail, Phone, MapPin } from 'lucide-react';
-import { SITE } from '@/data/site';
+import {useSite} from '@/components/layout/site-settings-provider';
 export default function Footer() {
+    const SITE=useSite();
     return <footer className="site-footer"><div className="container footer-main">
  <div className="footer-brand"><div className="footer-logo"><Image src={SITE.logo} alt="Logo PALLAS" fill sizes="180px"/></div><h3><T vi={"Ch\u0103m ch\u00FAt t\u1EEBng h\u00E0nh tr\u00ECnh."}/></h3><p><T vi={"PALLAS \u2013 Trung Ni\u00EAn \u0111\u1ED3ng h\u00E0nh c\u00F9ng nh\u1EEFng ng\u01B0\u1EDDi y\u00EAu xe v\u00E0 c\u00E1c \u0111\u01A1n v\u1ECB ch\u0103m s\u00F3c xe chuy\u00EAn nghi\u1EC7p."}/></p><div className="footer-social"><a href={`tel:${SITE.phone}`} aria-label="Gọi PALLAS"><Phone size={18}/></a><a href={`mailto:${SITE.email}`} aria-label="Email PALLAS"><Mail size={18}/></a></div></div>
  <div className="footer-col"><h4><T vi={"Kh\u00E1m ph\u00E1"}/></h4><Link href="/san-pham"><T vi={"T\u1EA5t c\u1EA3 s\u1EA3n ph\u1EA9m"}/></Link><Link href="/san-pham?category=foam"><T vi={"B\u1ECDt tuy\u1EBFt r\u1EEDa xe"}/></Link><Link href="/san-pham?category=touchless"><T vi={"R\u1EEDa kh\u00F4ng ch\u1EA1m"}/></Link><Link href="/san-pham?category=wax"><T vi={"D\u01B0\u1EE1ng b\u00F3ng & wax"}/></Link><Link href="/san-pham?category=equipment"><T vi={"Thi\u1EBFt b\u1ECB r\u1EEDa xe"}/></Link></div>

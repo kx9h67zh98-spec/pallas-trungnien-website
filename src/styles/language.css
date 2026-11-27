@@ -1,11 +1,11 @@
 /* Accessible bilingual control */
-.language-switch{display:inline-flex;align-items:center;flex-shrink:0;gap:1px;padding:3px;border:1px solid #dbe4db;border-radius:999px;background:#f5f8f3;box-shadow:0 1px 2px rgba(16,43,26,.05)}
-.language-switch button{min-width:40px;min-height:31px;padding:0 7px;border:0;border-radius:999px;background:transparent;color:#607369;font-size:11px;font-weight:800;letter-spacing:.035em;cursor:pointer;transition:background .16s,color .16s,box-shadow .16s}
-.language-switch button:hover:not(.active){color:#173d2a;background:#e5eddd}
-.language-switch button.active{color:#fff;background:#1a4832;box-shadow:0 1px 4px rgba(15,40,24,.16)}
-.language-switch button:focus-visible{outline:3px solid #8dbf4f;outline-offset:2px}
-.language-separator{width:1px;height:14px;background:#cad7c7}
-.mobile-language-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0 15px;border-bottom:1px solid #e4ebe2;font-size:12px;font-weight:720;color:#47654d}
+.language-switch{display:inline-flex;align-items:center;flex-shrink:0;gap:1px;padding:3px;border:1px solid #ebe5d8;border-radius:999px;background:#f8f6f0;box-shadow:0 1px 2px rgba(16,43,26,.05)}
+.language-switch button{min-width:40px;min-height:31px;padding:0 7px;border:0;border-radius:999px;background:transparent;color:#5b4c38;font-size:11px;font-weight:800;letter-spacing:.035em;cursor:pointer;transition:background .16s,color .16s,box-shadow .16s}
+.language-switch button:hover:not(.active){color:#0f1013;background:#ebe5d8}
+.language-switch button.active{color:#fff;background:#1e1e20;box-shadow:0 1px 4px rgba(15,40,24,.16)}
+.language-switch button:focus-visible{outline:3px solid #b08543;outline-offset:2px}
+.language-separator{width:1px;height:14px;background:#d7c9b1}
+.mobile-language-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0 15px;border-bottom:1px solid #ebe5d8;font-size:12px;font-weight:720;color:#32302f}
 .mobile-language-row .language-switch{margin-left:auto}
 @media(max-width:960px){.header-actions>.language-switch{display:none}}
 @media(min-width:961px){.mobile-language-row{display:none}}

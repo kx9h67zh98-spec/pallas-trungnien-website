@@ -1,0 +1,57 @@
+/* PALLAS v1.9 | Editorial system: midnight brand recolor, gold details, accessible motion */
+.v19-discovery,.v19-faq{position:relative;background:#f8f6f0}
+.v19-section-head{display:flex;justify-content:space-between;align-items:end;gap:22px;margin-bottom:30px}
+.v19-section-head h2,.v19-process h2,.v19-faq h2{font-weight:790;letter-spacing:-.048em;line-height:1.08;font-size:clamp(32px,4.5vw,57px);margin:12px 0}
+.v19-section-head h2 i,.v19-process h2 i,.v19-faq h2 i{font-family:Georgia,serif;color:#5b4c38;font-weight:500}
+.v19-section-head p,.v19-process-top p,.v19-faq-grid>div>p{max-width:590px;line-height:1.7;color:#5b4c38;font-size:14px}
+.v19-discovery-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:17px}
+.v19-discovery-card{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:355px;overflow:hidden;border-radius:19px;border:1px solid #ebe5d8;background:#fff;color:#0f1013;padding:25px;box-shadow:0 16px 55px rgba(19,47,29,.04);transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s,border-color .3s}
+.v19-discovery-card:hover{transform:translateY(-5px);border-color:#d7c9b1;box-shadow:0 22px 56px rgba(19,47,29,.10)}
+.v19-discovery-card-featured{background:linear-gradient(138deg,#0f1013,#1e1e20 75%,#32302f);color:#fff;border-color:#1e1e20}
+.v19-discovery-card-featured:before{content:'';width:280px;height:280px;border:1px solid rgba(212,246,110,.22);border-radius:50%;position:absolute;right:-116px;top:-100px}
+.v19-discovery-art{width:100%;display:flex;justify-content:space-between;align-items:flex-start;position:relative}
+.v19-discovery-art>span{font-size:12px;letter-spacing:.15em;font-weight:800;color:#856940}
+.v19-discovery-card-featured .v19-discovery-art>span{color:#ecbe67}
+.v19-discovery-art svg{width:64px;height:64px;padding:14px;border-radius:20px;background:#f8f6f0;color:#32302f;transition:transform .3s}
+.v19-discovery-card-featured .v19-discovery-art svg{background:rgba(207,250,118,.12);color:#ecbe67}
+.v19-discovery-card:hover .v19-discovery-art svg{transform:rotate(-9deg) scale(1.04)}
+.v19-discovery-card small{font-size:10px;font-weight:750;letter-spacing:.14em;color:#856940}
+.v19-discovery-card-featured small{color:#d7c9b1}
+.v19-discovery-card h3{font-size:clamp(23px,2vw,31px);line-height:1.18;letter-spacing:-.035em;margin:10px 0}
+.v19-discovery-card p{font-size:13px;line-height:1.7;color:#758476;margin:0 0 20px}
+.v19-discovery-card-featured p{color:#ebe5d8}
+.v19-discovery-action{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800}
+.v19-discovery-action svg{transition:transform .2s}
+.v19-discovery-card:hover .v19-discovery-action svg{transform:translate(3px,-3px)}
+.v19-process{background:#0f1013;color:#fff;position:relative;overflow:hidden}
+.v19-process:before{content:'';position:absolute;right:-90px;top:-140px;width:550px;height:550px;background:radial-gradient(circle,#94ba4d17,transparent 68%);pointer-events:none}
+.v19-process-top{display:flex;justify-content:space-between;align-items:end;gap:25px;position:relative}
+.v19-process .eyebrow{color:#ecbe67}
+.v19-process h2 i{color:#ecbe67}
+.v19-process-top p{color:#aa926a}
+.v19-step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:32px}
+.v19-step{position:relative;padding:29px;border:1px solid rgba(229,246,211,.18);background:rgba(255,255,255,.035);border-radius:16px;transition:background .25s,transform .25s}
+.v19-step:hover{transform:translateY(-4px);background:rgba(255,255,255,.075)}
+.v19-step>span{position:absolute;right:25px;top:24px;color:#aa926a;font-size:12px;letter-spacing:.14em}
+.v19-step>svg{color:#ecbe67;margin-bottom:28px}
+.v19-step h3{color:#fff;font-size:21px;letter-spacing:-.02em;margin:0 0 13px}
+.v19-step p{font-size:13px;color:#d7c9b1;line-height:1.75;margin:0}
+.v19-faq-grid{display:grid;grid-template-columns:minmax(235px,.85fr) 1.5fr;gap:clamp(28px,6vw,100px)}
+.v19-faq-questions{border-top:1px solid #ebe5d8}
+.v19-faq-questions details{border-bottom:1px solid #ebe5d8;padding:0 4px}
+.v19-faq-questions summary{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:25px 0;font-size:16px;font-weight:750;cursor:pointer;list-style:none;color:#1e1e20}
+.v19-faq-questions summary::-webkit-details-marker{display:none}
+.v19-faq-questions summary:after{content:'+';font-size:25px;font-weight:400;color:#5b4c38}
+.v19-faq-questions details[open] summary:after{content:'−'}
+.v19-faq-questions details p{color:#5b4c38;line-height:1.75;font-size:13px;max-width:650px;padding:0 30px 22px 0;margin:0}
+.v19-promo{background:#ecbe67;color:#1e1e20}
+.v19-promo-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:21px;padding-bottom:21px}
+.v19-promo-tag{border:1px solid #32302f;display:inline-block;padding:7px 11px;border-radius:30px;font-size:10px;font-weight:850;letter-spacing:.08em;white-space:nowrap}
+.v19-promo h2{font-size:19px;line-height:1.25;margin:0}
+.v19-promo p{font-size:12px;margin:5px 0 0}
+.v19-promo .btn{background:#1e1e20;color:#fff}
+.form-direct-success{border:1px solid #aa926a;background:#f8f6f0;color:#1e1e20;padding:17px 19px;border-radius:11px;line-height:1.55;font-size:13px;font-weight:700;margin:18px 0}
+.form-fallback-link{display:inline-flex;color:#0f1013;text-decoration:underline;font-weight:800;margin-left:8px}
+@media(max-width:1020px){.v19-discovery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.v19-discovery-card-featured{grid-column:span 2;min-height:260px}.v19-discovery-card{min-height:300px}.v19-section-head{align-items:start}}
+@media(max-width:700px){.v19-discovery-grid,.v19-step-grid,.v19-faq-grid{grid-template-columns:1fr}.v19-discovery-card-featured{grid-column:auto}.v19-discovery-card{min-height:265px;padding:23px}.v19-section-head,.v19-process-top{display:block}.v19-section-head .text-link{margin-top:15px}.v19-step{padding:23px}.v19-step svg{margin-bottom:20px}.v19-promo-inner{display:flex;flex-direction:column;align-items:start}.v19-promo-inner .btn{width:100%;justify-content:center}.v19-faq-questions summary{font-size:14px;padding:21px 0}.v19-faq-grid{gap:24px}}
+@media(prefers-reduced-motion:reduce){.v19-discovery-card,.v19-discovery-art svg,.v19-step,.v19-discovery-action svg{animation:none!important;transition:none!important;transform:none!important}}

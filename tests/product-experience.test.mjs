@@ -25,10 +25,10 @@ test('quote quantity validation rejects negative, zero, non-integer and overflow
   for(const v of [1,25,99])assert.equal(isValidQuoteQuantity(v),true);
 });
 test('quotes contain truthful SKU, pack size and customer details in both languages',()=>{
-  const product=products.find(p=>p.slug==='nano-30-6l');
-  assert.equal(product.price,null);
+  const product=products.find(p=>p.slug==='nano-ex-6l');
+  assert.equal(product.price,480000);
   const a=quoteEmail({name:'Nguyễn An',phone:'090 123 4567',note:'20 can',product,quantity:20,email:'test@example.org',language:'vi'});
-  assert.match(a.text,/nano-30-6l/);assert.match(a.text,/Số lượng: 20/);assert.ok(a.url.startsWith('mailto:test@example.org?'));
+  assert.match(a.text,/nano-ex-6l/);assert.match(a.text,/Số lượng: 20/);assert.ok(a.url.startsWith('mailto:test@example.org?'));
   const b=quoteEmail({name:'Alex',phone:'+84901234567',note:'',product,quantity:2,email:'test@example.org',language:'en'});
   assert.match(b.text,/Quantity: 2/);assert.match(decodeURIComponent(b.url),/Pack size: 6L/);
 });

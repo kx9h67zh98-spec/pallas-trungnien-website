@@ -2,12 +2,13 @@
 import Link from 'next/link';
 import {Package} from 'lucide-react';
 import {useLanguage} from '@/components/i18n/language-provider';
-import {products} from '@/data/products';
+import {useShop} from '@/components/shop/shop-provider';
 import {getProductVariants} from '@/lib/product-experience';
 import {money} from '@/lib/format';
 
 export default function VariantSelector({slug}:{slug:string}){
   const {language} = useLanguage();
+  const {products}=useShop();
   const variants = getProductVariants(slug, products);
   if(variants.length < 2) return null;
   return <div className="variant-selector" aria-label={language==='en'?'Choose pack size':'Chọn dung tích'}>

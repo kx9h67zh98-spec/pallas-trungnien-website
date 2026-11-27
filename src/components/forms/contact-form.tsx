@@ -3,9 +3,10 @@ import {useLanguage} from '@/components/i18n/language-provider';
 import {T} from '@/components/i18n/t';
 import { useMemo, useRef, useState, type FormEvent } from 'react';
 import { ArrowUpRight, Check, ClipboardCopy, Mail, MessageSquareText, ShieldCheck } from 'lucide-react';
-import { SITE } from '@/data/site';
+import {useSite} from '@/components/layout/site-settings-provider';
 import { contactMethods, contactTopics, dealerInterests, cleanFormText, validateContact, type ContactValues } from '@/lib/form-validation';
 import { FormConsent, FormInput, FormSelect, FormTextarea } from './form-controls';
+import {directEnquiryEnabled,submitDirectEnquiry} from '@/lib/netlify-forms';
 const initialValues: ContactValues = {
     name: '', phone: '', email: '', topic: 'Tư vấn sản phẩm', contactMethod: 'Điện thoại',
     business: '', region: '', interest: '', message: '', consent: false,
@@ -14,6 +15,7 @@ type FieldName = keyof ContactValues;
 export default function ContactForm({ type = 'contact' }: {
     type?: 'contact' | 'dealer';
 }) {
+    const SITE=useSite();
     const {tr,language}=useLanguage();
     const dealer = type === 'dealer';
     const [values, setValues] = useState<ContactValues>(initialValues);
@@ -22,17 +24,22 @@ export default function ContactForm({ type = 'contact' }: {
     const [draft, setDraft] = useState('');
     const [copied, setCopied] = useState(false);
     const [copyFailed, setCopyFailed] = useState(false);
+    const [sending,setSending]=useState(false);
+    const [submitted,setSubmitted]=useState(false);
+    const [sendError,setSendError]=useState(false);
+    const [fallbackEmail,setFallbackEmail]=useState('');
     const formRef = useRef<HTMLFormElement>(null);
     const errors = useMemo(() => validateContact(values, dealer), [values, dealer]);
     const showError = (name: FieldName) => (attempted || touched[name]) ? errors[name] : undefined;
     const update = <K extends FieldName>(name: K, next: ContactValues[K]) => {
         setValues(prev => ({ ...prev, [name]: next }));
         setDraft('');
+        setSubmitted(false);setSendError(false);
         setCopied(false);
         setCopyFailed(false);
     };
     const blur = (name: FieldName) => () => setTouched(prev => ({ ...prev, [name]: true }));
-    function submit(event: FormEvent<HTMLFormElement>) {
+    async function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setAttempted(true);
         const nextErrors = validateContact(values, dealer);
@@ -61,7 +68,19 @@ export default function ContactForm({ type = 'contact' }: {
         setDraft(text);
         setCopied(false);
         setCopyFailed(false);
-        window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
+        const emailUrl=`mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
+        setFallbackEmail(emailUrl);
+        if(directEnquiryEnabled){
+          setSending(true);setSendError(false);setSubmitted(false);
+          try {
+            await submitDirectEnquiry(dealer?'pallas-dealer':'pallas-contact',{
+              name:cleanFormText(values.name),phone:cleanFormText(values.phone),email:cleanFormText(values.email),
+              ...(dealer?{business:values.business,region:values.region,interest:values.interest}:{topic:values.topic}),
+              contactMethod:values.contactMethod,message:cleanFormText(values.message),language,consent:values.consent,source:window.location.pathname
+            });
+            setSubmitted(true);
+          } catch {setSendError(true)} finally {setSending(false)}
+        } else window.location.href=emailUrl;
     }
     async function copyDraft() {
         try {
@@ -98,9 +117,11 @@ export default function ContactForm({ type = 'contact' }: {
       <FormSelect id="contact-method" name="contactMethod" label="Bạn muốn được liên hệ qua" value={values.contactMethod} onChange={v => update('contactMethod', v)} onBlur={blur('contactMethod')} error={showError('contactMethod')} options={contactMethods} full required hint="PALLAS sẽ xem lựa chọn này khi nhận email của bạn."/>
       <FormTextarea id="contact-message" name="message" label={dealer ? 'Mô tả nhu cầu hợp tác' : 'Nội dung bạn muốn trao đổi'} value={values.message} onChange={v => update('message', v)} onBlur={blur('message')} error={showError('message')} placeholder={dealer ? 'Ví dụ: Chúng tôi cần báo giá cho 20 can PALLAS Nano 30...' : 'Ví dụ: Tôi cần tư vấn nước rửa xe cho tiệm 3 cầu nâng...'} hint="Mô tả rõ sản phẩm, số lượng và mong muốn của bạn để được tư vấn tốt hơn." maxLength={1200} full required/>
     </div>
-    <FormConsent id="contact-consent" checked={values.consent} onChange={v => update('consent', v)} error={showError('consent')}><T vi={"\n      T\u00F4i \u0111\u1ED3ng \u00FD cung c\u1EA5p th\u00F4ng tin tr\u00EAn \u0111\u1EC3 PALLAS li\u00EAn h\u1EC7 theo y\u00EAu c\u1EA7u c\u1EE7a m\u00ECnh. D\u1EEF li\u1EC7u ch\u1EC9 \u0111\u01B0\u1EE3c g\u1EEDi khi t\u00F4i x\u00E1c nh\u1EADn g\u1EEDi trong \u1EE9ng d\u1EE5ng email.\n    "}/></FormConsent>
-    <button type="submit" className="btn btn-primary form-primary-action"><Mail size={18}/><T vi={" Chu\u1EA9n b\u1ECB email g\u1EEDi PALLAS "}/><ArrowUpRight size={18}/></button>
-    <p className="form-process-note"><ShieldCheck size={17}/><T vi={" Website kh\u00F4ng t\u1EF1 g\u1EEDi ho\u1EB7c l\u01B0u bi\u1EC3u m\u1EABu. \u1EE8ng d\u1EE5ng email s\u1EBD m\u1EDF \u0111\u1EC3 b\u1EA1n ki\u1EC3m tra v\u00E0 nh\u1EA5n "}/><strong><T vi={"G\u1EEDi"}/></strong></p>
-    {draft && <div className="form-draft-notice" role="status"><Check size={19}/><div><strong><T vi={"N\u1ED9i dung email \u0111\u00E3 s\u1EB5n s\u00E0ng"}/></strong><p><T vi={"N\u1EBFu \u1EE9ng d\u1EE5ng email kh\u00F4ng m\u1EDF, b\u1EA1n c\u00F3 th\u1EC3 sao ch\u00E9p n\u1ED9i dung v\u00E0 g\u1EEDi th\u1EE7 c\u00F4ng t\u1EDBi "}/><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p><button type="button" className="form-copy-button" onClick={copyDraft}><ClipboardCopy size={15}/>{tr(copied ? 'Đã sao chép' : 'Sao chép nội dung email')}</button>{copyFailed && <p className="form-field-error"><T vi={"Kh\u00F4ng th\u1EC3 sao ch\u00E9p t\u1EF1 \u0111\u1ED9ng. Vui l\u00F2ng m\u1EDF \u1EE9ng d\u1EE5ng email v\u00E0 th\u1EED l\u1EA1i."}/></p>}</div></div>}
+    <FormConsent id="contact-consent" checked={values.consent} onChange={v => update('consent', v)} error={showError('consent')}>{directEnquiryEnabled?(language==='en'?'I agree to send these details to PALLAS through the website':'Tôi đồng ý gửi những thông tin này đến PALLAS qua biểu mẫu trên website'):<T vi={"\n      T\u00F4i \u0111\u1ED3ng \u00FD cung c\u1EA5p th\u00F4ng tin tr\u00EAn \u0111\u1EC3 PALLAS li\u00EAn h\u1EC7 theo y\u00EAu c\u1EA7u c\u1EE7a m\u00ECnh. D\u1EEF li\u1EC7u ch\u1EC9 \u0111\u01B0\u1EE3c g\u1EEDi khi t\u00F4i x\u00E1c nh\u1EADn g\u1EEDi trong \u1EE9ng d\u1EE5ng email.\n    "}/>}</FormConsent>
+    <button type="submit" disabled={sending||submitted} className="btn btn-primary form-primary-action"><Mail size={18}/>{directEnquiryEnabled?(language==='en'?(sending?'Sending...':submitted?'Request received':'Send enquiry'):(sending?'Đang gửi...':submitted?'Đã gửi yêu cầu':'Gửi yêu cầu')):<T vi={" Chu\u1EA9n b\u1ECB email g\u1EEDi PALLAS "}/>}<ArrowUpRight size={18}/></button>
+    {submitted&&<p className="form-direct-success" role="status">{language==='en'?'Your enquiry was submitted. PALLAS will contact you using the details provided':'Đã tiếp nhận yêu cầu trên hệ thống. PALLAS sẽ liên hệ theo thông tin bạn cung cấp'}</p>}
+    {sendError&&<p className="form-validation-summary" role="alert">{language==='en'?'Automatic sending is unavailable. Please use the email fallback below':'Chưa gửi tự động được. Vui lòng dùng cách gửi qua email bên dưới'} {fallbackEmail&&<a className="form-fallback-link" href={fallbackEmail}>{language==='en'?'Open email':'Mở ứng dụng email'}</a>}</p>}
+    {!directEnquiryEnabled&&<p className="form-process-note"><ShieldCheck size={17}/><T vi={" Website kh\u00F4ng t\u1EF1 g\u1EEDi ho\u1EB7c l\u01B0u bi\u1EC3u m\u1EABu. \u1EE8ng d\u1EE5ng email s\u1EBD m\u1EDF \u0111\u1EC3 b\u1EA1n ki\u1EC3m tra v\u00E0 nh\u1EA5n "}/><strong><T vi={"G\u1EEDi"}/></strong></p>}
+    {draft && !submitted && <div className="form-draft-notice" role="status"><Check size={19}/><div><strong><T vi={"N\u1ED9i dung email \u0111\u00E3 s\u1EB5n s\u00E0ng"}/></strong><p><T vi={"N\u1EBFu \u1EE9ng d\u1EE5ng email kh\u00F4ng m\u1EDF, b\u1EA1n c\u00F3 th\u1EC3 sao ch\u00E9p n\u1ED9i dung v\u00E0 g\u1EEDi th\u1EE7 c\u00F4ng t\u1EDBi "}/><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p><button type="button" className="form-copy-button" onClick={copyDraft}><ClipboardCopy size={15}/>{tr(copied ? 'Đã sao chép' : 'Sao chép nội dung email')}</button>{copyFailed && <p className="form-field-error"><T vi={"Kh\u00F4ng th\u1EC3 sao ch\u00E9p t\u1EF1 \u0111\u1ED9ng. Vui l\u00F2ng m\u1EDF \u1EE9ng d\u1EE5ng email v\u00E0 th\u1EED l\u1EA1i."}/></p>}</div></div>}
   </form>;
 }
